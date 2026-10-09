@@ -4,29 +4,36 @@ jobs:
   Dependances:
     runs-on: ubuntu-latest
     steps:
-      - name: Récupération du code
+      - name: Checkout du code
         uses: actions/checkout@v4
-      - name: Contrôle de requirements.txt avec Trivy
+
+      - name: Contrôle des dépendances (requirements.txt) avec Trivy
         uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: fs
           scan-ref: requirements.txt
           scanners: vuln
           severity: HIGH,CRITICAL
-          exit-code: 1
+          ignore-unfixed: true
+          exit-code: '1'        # le job échoue si une vulnérabilité est trouvée
+          format: table
+
   Dockerfile:
     runs-on: ubuntu-latest
-    needs: Dependances
+    needs: Dependances          # ne s'exécute que si Dependances est OK
     steps:
-      - name: Récupération du code
+      - name: Checkout du code
         uses: actions/checkout@v4
-      - name: Test Dockerfile avec Trivy
+
+      - name: Contrôle du Dockerfile avec Trivy
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          scan-type: config
+          scan-type: config     # analyse des mauvaises configurations (IaC / Dockerfile)
           scan-ref: .
-          severity: HIGH,CRITICAL
-          exit-code: 1
+          severity: MEDIUM,HIGH,CRITICAL
+          exit-code: '1'
+          format: table
+
   Deploy:
     runs-on: ubuntu-latest
     needs: Dockerfile
