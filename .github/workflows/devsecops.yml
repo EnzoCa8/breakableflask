@@ -8,7 +8,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Contrôle des dépendances (requirements.txt) avec Trivy
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           scan-type: fs
           scan-ref: requirements.txt
@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Contrôle du Dockerfile avec Trivy
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           scan-type: config     # analyse des mauvaises configurations (IaC / Dockerfile)
           scan-ref: .
